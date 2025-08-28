@@ -101,6 +101,23 @@
   }
 
   *{box-sizing:border-box}
+/* === image inside board box === */
+.board-wrap { position: relative; overflow: hidden; }
+
+#boardPic {
+  position: absolute;
+  top: 10px; left: 10px; right: 10px; bottom: 10px;
+  max-width: calc(100% - 20px);
+  max-height: calc(100% - 20px);
+  width: auto; height: auto;
+  object-fit: cover;    /* or 'contain' if you don’t want cropping */
+  border-radius: 12px;
+  pointer-events: none; /* so you can still drag chess pieces */
+  z-index: 1;
+}
+
+#board { position: relative; z-index: 2; }
+
 </style>
 </head>
 <body>
