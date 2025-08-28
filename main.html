@@ -34,37 +34,56 @@
       z-index: 0;
     }
 
-    .page {
+    .page-wrap {
       position: relative;
       z-index: 1;
+      inline-size: min(100%, var(--max-content-width));
       padding: clamp(12px, 3vw, 32px);
       display: grid;
       justify-items: center;
-      gap: clamp(14px, 3vw, 28px);
+      gap: clamp(16px, 3.5vw, 32px);
     }
 
-    /* Back button (keep retro font to match menu) */
-    .back-button {
-      position: fixed;
-      top: max(12px, env(safe-area-inset-top));
-      left: max(12px, env(safe-area-inset-left));
-      font-family: "Press Start 2P", cursive;
-      font-size: clamp(10px, 2.8vw, 12px);
-      padding: clamp(8px, 2.6vw, 10px) clamp(12px, 3.4vw, 16px);
-      background-color: white; color: black;
-      border: 2px solid black; border-radius: 10px;
-      text-decoration: none; cursor: pointer;
-      box-shadow: 0 0 6px rgba(0,0,0,0.3);
-      transition: background-color .2s, box-shadow .2s, transform .1s;
-      z-index: 10000; -webkit-tap-highlight-color: transparent;
+    .title {
+      font-family: "Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      text-align: center;
+      line-height: 1.15;
+      /* Scales from small phones to desktop */
+      font-size: clamp(22px, 7vw, 64px);
+      letter-spacing: 0.5px;
+      text-wrap: balance;
     }
-    .back-button:hover { background-color: #eee; }
-    .back-button:active { transform: scale(0.98); }
 
-    /* Language switch — SAME style as menu page */
+    .button-container {
+      display: grid;
+      grid-auto-flow: row;
+      gap: clamp(10px, 3vw, 18px);
+      width: min(92%, 520px);
+      justify-items: stretch;
+    }
+
+    .menu-button {
+      appearance: none;
+      border: none;
+      border-radius: 14px;
+      padding: clamp(12px, 3.2vw, 18px) clamp(16px, 5vw, 28px);
+      font-size: clamp(14px, 3.4vw, 22px);
+      font-weight: 700;
+      line-height: 1.2;
+      cursor: pointer;
+      background: #111;
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      transition: transform .08s ease, box-shadow .15s ease, opacity .2s ease;
+      touch-action: manipulation;
+    }
+    .menu-button:active { transform: translateY(2px) scale(0.99); }
+    .menu-button:focus-visible { outline: 3px solid #4c8bf5; outline-offset: 2px; }
+
+    /* Top-center language switcher */
     .lang-switch {
       position: fixed;
-      top: max(10px, env(safe-area-inset-top));
+      top: 10px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 9999;
@@ -76,70 +95,28 @@
       background: rgba(255,255,255,0.85);
       backdrop-filter: blur(6px);
       box-shadow: 0 4px 14px rgba(0,0,0,0.12);
-      color: #111;
       font-size: 14px;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      font-family: "Press Start 2P", cursive;
     }
     .lang-switch button {
-      border: 0; padding: 6px 10px; border-radius: 999px;
-      background: transparent; cursor: pointer; font-weight: 600;
-      font-family: inherit;
+      border: 0;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 600;
     }
-    .lang-switch button.active { background: #111; color: #fff; }
-
-    /* Title retro font */
-    .title {
-      font-family: "Press Start 2P", cursive;
-      text-align: center;
-      line-height: 1.2;
-      font-size: clamp(20px, 6.4vw, 48px);
-      letter-spacing: .5px;
-      margin-top: clamp(24px, 8vw, 60px);
+    .lang-switch button.active {
+      background: #111;
+      color: #fff;
     }
 
-    .info-wrap {
-      width: min(100%, var(--maxw));
-      padding-inline: clamp(12px, 3vw, 24px);
-    }
-
-    /* Info text uses classic serif font */
-    .info-kicker-wrap {
+    /* Safe area for notches */
+    .safe-bottom {
+      height: env(safe-area-inset-bottom, 0);
       width: 100%;
-      display: grid;
-      place-items: center;
-      margin: 8px 0 16px;
     }
-    .info-kicker,
-    .info-text {
-      font-family: "Times New Roman", Georgia, serif;
-    }
-    .info-kicker {
-      font-size: clamp(12px, 3.2vw, 18px);
-      opacity: .95;
-      text-align: center;
-      display: inline-block;
-      max-width: var(--measure);
-    }
-    .info-text {
-      font-size: clamp(14px, 3.2vw, 18px);
-      line-height: 1.65;
-      margin: 0 auto 16px;
-      max-inline-size: var(--measure);
-    }
-
-    @media (min-width: 1200px) {
-      .info-columns {
-        columns: 2;
-        column-gap: clamp(24px, 4vw, 48px);
-        max-width: var(--maxw);
-        margin-inline: auto;
-      }
-      .info-columns .info-text { break-inside: avoid; max-inline-size: none; }
-    }
-
-    .safe-bottom { height: env(safe-area-inset-bottom, 0); width: 100%; }
   </style>
 </head>
 <body>
@@ -156,9 +133,9 @@
     <div class="title" data-i18n="hero.title">Smart Chessboard</div>
     <div class="button-container">
       <button class="menu-button" data-i18n="home.play"
-              onclick="window.location.href='./play.html'">Play</button>
+              onclick="window.location.href='./play/main.html'">Play</button>
       <button class="menu-button" data-i18n="home.info"
-              onclick="window.location.href='./info.html'">Information</button>
+              onclick="window.location.href='./info/main.html'">Information</button>
     </div>
   </main>
 
@@ -180,8 +157,8 @@
         },
         th: {
           /* ==== Home page strings ==== */
-          "hero.title": "กระดานหมากรุกอัจฉริยะ",
-          "home.play": "เริ่มเล่น",
+          "hero.title": "สมาร์ตเชสบอร์ด",
+          "home.play": "เล่น",
           "home.info": "ข้อมูล",
 
           /* ==== If you use these keys on other pages later, they’re ready ==== */
@@ -354,7 +331,3 @@
   </script>
 </body>
 </html>
-
-
-
-
