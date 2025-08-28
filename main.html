@@ -38,53 +38,40 @@
     }
 
     /* Title styling: crisp glow that doesn’t blur on phones */
-    .title {
-      margin: 10px auto 4px;
-      text-align: center;
-      font-size: clamp(18px, 5.8vw, 34px);
-      color: #fff;
+    /* Center the whole block (title + buttons) */
+.page-wrap {
+  flex: 1;                        /* take available height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;        /* vertical centering */
+  align-items: center;            /* horizontal centering */
+  gap: 40px;                      /* space between title and buttons */
+  width: 100%;
+  max-width: var(--max-content-width);
+  padding: 0 16px;
+}
 
-      /* Subtle, tight glow (no big blur radii) */
-      text-shadow:
-        0 0 2px rgba(156, 204, 255, 0.9),  /* #9cf */
-        0 0 4px rgba(68, 170, 255, 0.8);   /* #4af */
+/* Title spacing */
+.title {
+  margin: 0;                      /* reset margin */
+  text-align: center;
+  font-size: clamp(18px, 5.8vw, 34px);
+  color: #fff;
+  text-shadow:
+    0 0 2px rgba(156, 204, 255, 0.9),
+    0 0 4px rgba(68, 170, 255, 0.8);
+  -webkit-text-stroke: 0.35px rgba(255, 255, 255, 0.35);
+}
 
-      /* Hairline stroke for retina devices (keeps edges sharp) */
-      -webkit-text-stroke: 0.35px rgba(255, 255, 255, 0.35);
-
-      max-width: var(--maxw);
-    }
-
-    /* On very dense screens, tighten even more */
-    @media (min-resolution: 2dppx) {
-      .title {
-        text-shadow:
-          0 0 1.5px rgba(156, 204, 255, 0.9),
-          0 0 3px   rgba(68, 170, 255, 0.8);
-        -webkit-text-stroke: 0.3px rgba(255,255,255,0.35);
-      }
-    }
-
-    /* Subtitle: tiny sharpen to stop washout */
-    .kicker {
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-      margin: 0 auto 12px;
-      max-width: var(--maxw);
-      text-shadow: 0 0 1px rgba(255, 255, 255, 0.35);
-    }
-
-    /* Buttons kept original */
-    /* Stack buttons vertically */
+/* Buttons container (already vertical) */
 .button-container {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 24px;                      /* spacing between the 2 buttons */
   width: 85%;
   max-width: 420px;
-  align-items: stretch;
 }
+
 
 /* Retro pixel style buttons */
 .menu-button {
@@ -289,4 +276,5 @@
   </script>
 </body>
 </html>
+
 
