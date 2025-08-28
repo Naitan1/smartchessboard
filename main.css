@@ -7,10 +7,15 @@ body {
   flex-direction: column;
   align-items: center;
   padding-top: 100px;
+
+  /* keep the pixelated look */
   font-family: 'Press Start 2P', cursive;
   -webkit-text-size-adjust: 100%;
-  -webkit-font-smoothing: antialiased;    /* crisper glyph edges */
-  text-rendering: optimizeLegibility;
+
+  /* important: disable smoothing for pixel fonts */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: auto;
+  text-rendering: geometricPrecision;
 }
 
 /* Title styling: crisp glow that doesn’t blur on phones */
