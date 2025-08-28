@@ -12,19 +12,24 @@ body {
 
 /* Title styling with glow */
 .title {
-    font-size: 32px;
-    color: white;
-    text-align: center;
-    margin-bottom: 40px;
-    /* Glowing text effect */
-    text-shadow:
-        0 0 5px #fff,
-        0 0 10px #fff,
-        0 0 20px #9cf,
-        0 0 30px #9cf,
-        0 0 40px #4af,
-        0 0 55px #4af,
-        0 0 75px #4af;
+  margin:10px auto 4px;
+  text-align:center;
+  font-size:clamp(18px,5.8vw,34px);
+  color:#fff;
+  /* Sharper glow: less blur */
+  text-shadow: 0 0 2px #9cf, 0 0 4px #4af;
+  /* Stroke for crisp edges on mobile (WebKit browsers) */
+  -webkit-text-stroke: 0.5px rgba(255,255,255,0.3);
+  max-width:var(--maxw);
+}
+
+.kicker {
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  margin:0 auto 12px;
+  max-width:var(--maxw);
+  text-shadow: 0 0 1px rgba(255,255,255,0.4); /* subtle sharpener */
 }
 
 /* Stack buttons vertically */
@@ -57,3 +62,4 @@ body {
         0 0 10px 2px #66aaff,  /* blue-ish glow */
         0 0 20px 6px #66aaff;
 }
+
