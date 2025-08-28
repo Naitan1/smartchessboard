@@ -1,38 +1,97 @@
-/* Background gradient */
+/* Background gradient (stable on mobile chrome/safari) */
 body {
-    margin: 0;
-    height: 100vh;
-    background: linear-gradient(to top, #555555, #000000);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 100px;
-    font-family: 'Press Start 2P', cursive;
+  margin: 0;
+  min-height: 100svh;                     /* better than 100vh on mobile */
+  background: linear-gradient(to top, #555555, #000000) fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 100px;
+
+  /* keep the pixelated look */
+  font-family: 'Press Start 2P', cursive;
+  -webkit-text-size-adjust: 100%;
+
+  /* important: disable smoothing for pixel fonts */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: auto;
+  text-rendering: geometricPrecision;
 }
 
-/* Title styling with glow */
+/* Title styling: crisp glow that doesn’t blur on phones */
 .title {
-    font-size: 32px;
-    color: white;
-    text-align: center;
-    margin-bottom: 40px;
-    /* Glowing text effect */
-    text-shadow:
-        0 0 5px #fff,
-        0 0 10px #fff,
-        0 0 20px #9cf,
-        0 0 30px #9cf,
-        0 0 40px #4af,
-        0 0 55px #4af,
-        0 0 75px #4af;
+  margin: 10px auto 4px;
+  text-align: center;
+  font-size: clamp(18px, 5.8vw, 34px);
+  color: #fff;
+
+  /* Subtle, tight glow (no big blur radii) */
+  text-shadow:
+    0 0 2px rgba(156, 204, 255, 0.9),  /* #9cf */
+    0 0 4px rgba(68, 170, 255, 0.8);   /* #4af */
+
+  /* Hairline stroke for retina devices (keeps edges sharp) */
+  -webkit-text-stroke: 0.35px rgba(255, 255, 255, 0.35);
+
+  max-width: var(--maxw);
 }
-.info-text {
-    font-family: 'Press Start 2P', cursive;
-    font-size: 12px;
-    color: #ffffff;
-    max-width: 600px;
-    margin: 10px auto 0 auto;
-    text-align: center;
-    line-height: 1.4;
-    padding: 0 20px;
+
+/* On very dense screens, tighten even more */
+@media (min-resolution: 2dppx) {
+  .title {
+    text-shadow:
+      0 0 1.5px rgba(156, 204, 255, 0.9),
+      0 0 3px   rgba(68, 170, 255, 0.8);
+    -webkit-text-stroke: 0.3px rgba(255,255,255,0.35);
+  }
+}
+
+/* Subtitle: tiny sharpen to stop washout */
+.kicker {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0 auto 12px;
+  max-width: var(--maxw);
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+/* Stack buttons vertically */
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 80%;
+  max-width: 400px;
+}
+
+/* Buttons */
+.menu-button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 16px;
+  padding: 20px;
+  width: 100%;
+  background-color: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.12s, box-shadow 0.2s;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.35);
+}
+
+/* Hover glow, but non-blurry */
+.menu-button:hover {
+  background-color: #eaeaea;
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.2),
+    0 0 6px 1px rgba(102, 170, 255, 0.7),   /* tighter inner glow */
+    0 0 12px 3px rgba(102, 170, 255, 0.45); /* softer outer glow */
+}
+
+/* Reduce motion = no hover pop */
+@media (prefers-reduced-motion: reduce) {
+  .menu-button { transition: none; }
+  .menu-button:hover { transform: none; }
 }
