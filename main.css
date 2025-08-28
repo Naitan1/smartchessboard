@@ -57,17 +57,3 @@ body {
         0 0 10px 2px #66aaff,  /* blue-ish glow */
         0 0 20px 6px #66aaff;
 }
-
-html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100dvh;       /* always fill screen */
-  background: linear-gradient(to top, #555555, #000000) fixed;
-  overflow-x: hidden;       /* no sideways scroll */
-  overscroll-behavior-y: none; /* stops rubber-band scrolling on mobile */
-}
-
-/* Optional: if particles canvas flashes white */
-#particles, #particles canvas {
-  background: transparent !important;
-}
