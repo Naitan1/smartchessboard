@@ -36,3 +36,20 @@ body {
     line-height: 1.4;
     padding: 0 20px;
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;   /* prevent sideways scroll */
+  overscroll-behavior: none; /* stops rubber-band on modern browsers */
+}
+
+body {
+  min-height: 100dvh;   /* lock to dynamic viewport height (mobile safe) */
+  background: linear-gradient(to top, #555555, #000000) fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* keep content near the top */
+}
+
