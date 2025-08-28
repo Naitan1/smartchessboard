@@ -40,15 +40,15 @@
     /* Title styling: crisp glow that doesn’t blur on phones */
     /* Center the whole block (title + buttons) */
 .page-wrap {
-  flex: 1;                        /* take available height */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;        /* vertical centering */
-  align-items: center;            /* horizontal centering */
-  gap: 40px;                      /* space between title and buttons */
+  justify-content: flex-start;   /* push content toward top */
+  align-items: center;
+  gap: 40px;                     /* space between title and buttons */
   width: 100%;
   max-width: var(--max-content-width);
-  padding: 0 16px;
+  padding: 80px 16px 0;          /* top padding pushes it down just enough */
 }
 
 /* Title spacing */
@@ -276,5 +276,6 @@
   </script>
 </body>
 </html>
+
 
 
