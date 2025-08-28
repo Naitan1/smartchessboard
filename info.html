@@ -13,9 +13,9 @@
 
   <style>
   :root {
-    --maxw: 1200px;         /* page max width */
-    --measure: 85ch;        /* comfortable reading width on desktop */
-    --measure-mobile: 68ch; /* narrower measure for phones */
+    --maxw: 1200px;
+    --measure: 85ch;
+    --measure-mobile: 68ch;
   }
 
   body {
@@ -26,7 +26,6 @@
     background: linear-gradient(to top, #555, #000) fixed;
   }
 
-  /* particles layer */
   #particles { position: fixed; inset: 0; z-index: 0; }
 
   .page {
@@ -38,7 +37,6 @@
     gap: clamp(14px, 3vw, 28px);
   }
 
-  /* Back button (unchanged look) */
   .back-button {
     position: fixed;
     top: max(12px, env(safe-area-inset-top));
@@ -56,7 +54,6 @@
   .back-button:hover { background-color: #eee; }
   .back-button:active { transform: scale(0.98); }
 
-  /* Language switch (unchanged look) */
   .lang-switch {
     position: fixed;
     top: max(10px, env(safe-area-inset-top));
@@ -84,7 +81,6 @@
   }
   .lang-switch button.active { background: #111; color: #fff; }
 
-  /* Title (retro font) with crisp glow */
   .title {
     font-family: "Press Start 2P", cursive;
     text-align: center;
@@ -99,28 +95,19 @@
     -webkit-text-stroke: 0.35px rgba(255,255,255,0.35);
   }
 
-  /* Content wrapper */
   .info-wrap {
     width: min(100%, var(--maxw));
     padding-inline: clamp(12px, 4vw, 32px);
   }
 
-  /* Kicker + paragraph typography
-     - English: classic serif
-     - Thai: Thai-friendly serif/sans fallback
-     - Responsive widths, better wrapping, beautiful hyphenation */
   .info-kicker,
   .info-text {
     max-inline-size: min(var(--measure), 100%);
     margin-left: auto;
     margin-right: auto;
-
-    /* allow pretty wrapping; safe fallbacks */
     text-wrap: pretty;
     overflow-wrap: anywhere;
     hyphens: auto;
-
-    /* gentle font smoothing for body text */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -142,11 +129,11 @@
     margin: 0 auto 16px;
   }
 
-  /* Thai enhancements: friendlier fonts, size & line-height bump */
+  /* Thai specific adjustments */
   html[lang="th"] .info-kicker,
   html[lang="th"] .info-text {
     font-family: "Noto Serif Thai", "Sarabun", "Th Sarabun New", "Leelawadee UI", Tahoma, serif;
-    word-break: keep-all; /* avoid breaking Thai words oddly */
+    word-break: keep-all;
   }
   html[lang="th"] .info-kicker {
     font-size: clamp(14px, 3.6vw, 20px);
@@ -157,14 +144,12 @@
     line-height: 1.85;
   }
 
-  /* Mobile-first: use a narrower reading measure */
   @media (max-width: 640px) {
     .info-kicker, .info-text {
       max-inline-size: min(var(--measure-mobile), 100%);
     }
   }
 
-  /* Desktop columns when very wide */
   @media (min-width: 1100px) {
     .info-columns {
       columns: 2;
@@ -174,22 +159,20 @@
     }
     .info-columns .info-text {
       break-inside: avoid;
-      max-inline-size: none; /* allow columns to flow naturally */
+      max-inline-size: none;
     }
   }
 
-  /* spacing between paragraphs when not using columns */
   .info-columns .info-text + .info-text { margin-top: 8px; }
 
   .safe-bottom { height: env(safe-area-inset-bottom, 0); width: 100%; }
-</style>
+  </style>
 </head>
 <body>
   <div id="particles"></div>
 
   <a href="../main.html" class="back-button" data-i18n="back.label" data-i18n-title="back.label" title="Back">&#8592; Back</a>
 
-  <!-- Language switch -->
   <div id="lang-switcher" class="lang-switch" aria-label="Language switch">
     <button type="button" data-lang="en" aria-pressed="true">English</button>
     <span>•</span>
@@ -210,11 +193,9 @@
         <p class="info-text" data-i18n="info.p1">
           The Smart Chessboard is a project designed to both teach new players and provide a unique and enjoyable experience for chess enthusiasts. It incorporates several innovative features.
         </p>
-
         <p class="info-text" data-i18n="info.p2">
           The first is the pattern system: each tile on the 8x8 board is equipped with a sensor and an LED. Every chess piece is fitted with a QR code at its base. When a piece is lifted, the sensor detects its absence and the LEDs will display the movement patterns available to that piece—whether it can move, capture, or put the opponent in check.
         </p>
-
         <p class="info-text" data-i18n="info.p3">
           Additionally, the Smart Chessboard is accompanied by a side screen containing a variety of tools. These include a timer, buttons to start and reset the game clock, and mode selection options: Human vs Human or AI vs Human. When choosing to play against the AI, players can select the opponent’s Elo rating or difficulty level, powered by the Stockfish API. The screen also displays both the player’s moves and the AI’s responses in real time.
         </p>
@@ -227,7 +208,6 @@
   <script src="./info.particle.js"></script>
   <script src="./ext.explosion.js"></script>
 
-  <!-- i18n script (English default, Thai available) -->
   <script>
   (function () {
     const I18N = {
@@ -246,12 +226,7 @@
 
       init() {
         const saved = localStorage.getItem('lang');
-        if (!saved) {
-          localStorage.setItem('lang', 'en');
-          this.current = 'en';
-        } else {
-          this.current = (saved === 'en' || saved === 'th') ? saved : 'en';
-        }
+        this.current = (saved === 'en' || saved === 'th') ? saved : 'en';
         document.documentElement.setAttribute('lang', this.current);
         this.prepareAll(document);
         this.apply(this.current);
@@ -279,13 +254,13 @@
           if (!this.dict[lang]) return;
           this.current = lang;
           localStorage.setItem('lang', lang);
-          document.documentElement.setAttribute('lang', lang);
           this.apply(lang);
           setActive(lang);
         });
       },
 
       apply(lang) {
+        document.documentElement.setAttribute('lang', lang); // ensures CSS swaps
         const dict = this.dict[lang] || {};
         document.querySelectorAll('[data-i18n]').forEach(el => {
           const k = el.getAttribute('data-i18n');
@@ -316,7 +291,3 @@
   </script>
 </body>
 </html>
-
-
-
-
