@@ -81,9 +81,9 @@
     .menu-button:focus-visible { outline: 3px solid #4c8bf5; outline-offset: 2px; }
 
     /* Top-center language switcher */
-    .lang-switch {
+     .lang-switch {
       position: fixed;
-      top: 10px;
+      top: max(10px, env(safe-area-inset-top));
       left: 50%;
       transform: translateX(-50%);
       z-index: 9999;
@@ -95,22 +95,18 @@
       background: rgba(255,255,255,0.85);
       backdrop-filter: blur(6px);
       box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      color: #111;
       font-size: 14px;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
+      font-family: "Press Start 2P", cursive;
     }
     .lang-switch button {
-      border: 0;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: transparent;
-      cursor: pointer;
-      font-weight: 600;
+      border: 0; padding: 6px 10px; border-radius: 999px;
+      background: transparent; cursor: pointer; font-weight: 600;
+      font-family: inherit;
     }
-    .lang-switch button.active {
-      background: #111;
-      color: #fff;
-    }
+    .lang-switch button.active { background: #111; color: #fff; }
 
     /* Safe area for notches */
     .safe-bottom {
@@ -133,9 +129,9 @@
     <div class="title" data-i18n="hero.title">Smart Chessboard</div>
     <div class="button-container">
       <button class="menu-button" data-i18n="home.play"
-              onclick="window.location.href='./play/main.html'">Play</button>
+              onclick="window.location.href='./play.html'">Play</button>
       <button class="menu-button" data-i18n="home.info"
-              onclick="window.location.href='./info/main.html'">Information</button>
+              onclick="window.location.href='./info.html'">Information</button>
     </div>
   </main>
 
@@ -331,3 +327,4 @@
   </script>
 </body>
 </html>
+
