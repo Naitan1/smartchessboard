@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Smart Chessboard | Play</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link rel="icon" href="./v2.IMG_5982.webp" type="image/x-icon" />
+  <link rel="stylesheet" href="./play.min.css" />
+  <link rel="stylesheet" href="./p.particle.css" />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chess.js@1.0.0/dist/chess.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+
+<style>
+  :root{
+    --bg-top:#000000;
+    --bg-bot:#555555;
+    --accent:#4f46e5;
+    --muted:#aeb2bf;
+    --panel:#171821;
+    --ring:rgba(79,70,229,0.35);
+    --maxw: 1200px;
+  }
+
+  html,body{margin:0; padding:0; min-height:100dvh; background:linear-gradient(to top,var(--bg-bot),var(--bg-top)) fixed; color:#fff;}
+  body{font-family:"Press Start 2P", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;}
+
+  .lang-switch {
+    position: fixed;
+    top: max(10px, env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    color: #111;
+    font-size: 14px;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family: "Press Start 2P", cursive;
+  }
+  .lang-switch button {
+    border: 0; padding: 6px 10px; border-radius: 999px;
+    background: transparent; cursor: pointer; font-weight: 600;
+    font-family: inherit;
+  }
+  .lang-switch button.active { background: #111; color: #fff; }
+
+  .page-pad { height: 56px; } 
+
+  .title{margin:10px auto 4px; text-align:center; font-size:clamp(18px,5.8vw,34px); text-shadow:0 0 5px #fff,0 0 10px #9cf,0 0 18px #4af; max-width:var(--maxw)}
+  .kicker{text-align:center; color:var(--muted); font-size:12px; margin:0 auto 12px; max-width:var(--maxw)}
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:clamp(12px,3vw,24px); display:grid; grid-template-columns:min(92vw,560px) minmax(320px, 1fr); gap:clamp(16px,3vw,28px); align-items:start}
+  @media (max-width:960px){.wrap{grid-template-columns:1fr}}
+
+  .board-wrap{border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.08); box-shadow:0 10px 40px rgba(0,0,0,.35); justify-self:center; background:#121522; padding:10px}
+  #board{width:min(92vw,540px); max-width:540px; aspect-ratio:1/1}
+
+  .panel{background:var(--panel); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px; box-shadow:0 8px 30px rgba(0,0,0,.35)}
+  .h2{font-size:14px; margin:0 0 10px}
+  .row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .control{background:#10121c; border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:12px; margin-bottom:10px}
+  label{display:block; font-size:10px; color:var(--muted); margin-bottom:6px}
+  select,input,button{width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.14); background:#0c0e16; color:#fff; font-family:inherit}
+  .btn{background:var(--accent); border-color:transparent; font-weight:700; box-shadow:0 6px 18px var(--ring); cursor:pointer}
+  .btn.secondary{background:#2a2d3a}
+  .status{margin-top:10px; color:#fff; font-size:12px; min-height:18px}
+  .clocks{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px}
+  .clock{background:#0c0e16; border:1px solid rgba(255,255,255,.14); border-radius:10px; padding:10px; text-align:center; font-size:14px}
+  .log{margin-top:10px; max-height:220px; overflow:auto; background:#0c0e16; border:1px solid rgba(255,255,255,.14); border-radius:10px; padding:10px; font-size:12px; line-height:1.5}
+  .log code{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+
+  #skillSel{min-width: 260px;}
+  @media (max-width:960px){
+    #skillSel{min-width: 100%;}
+    #skillWrap{grid-column: 1 / -1;}
+  }
+
+  *{box-sizing:border-box}
+</style>
+</head>
+<body>
+
+<div id="lang-switcher" class="lang-switch" aria-label="Language switch">
+  <button type="button" data-lang="en" aria-pressed="true">English</button>
+  <span>•</span>
+  <button type="button" data-lang="th" aria-pressed="false">ไทย</button>
+</div>
+<div class="page-pad" aria-hidden="true"></div>
+
+<h1 class="title" data-i18n="play.title">Smart Chessboard — Play</h1>
+<p class="kicker" data-i18n="play.subtitle">A simulation of a real Smart Chessboard. Tap a piece to see legal moves.</p>
+
+<div class="wrap">
+  <section class="board-wrap">
+    <div id="board"></div>
+  </section>
+
+  <aside class="panel">
+    <p class="h2" data-i18n="side.tools">Side screen tools</p>
+
+    <div class="control">
+      <label data-i18n="side.mode">Mode</label>
+      <select id="modeSel">
+        <option value="hvh" data-i18n="mode.hvh">Human vs Human</option>
+        <option value="hvai" data-i18n="mode.hvai">Human vs AI</option>
+      </select>
+      <div class="row" style="margin-top:8px">
+        <div id="skillWrap">
+          <label data-i18n="ai.difficulty">AI Strength</label>
+          <select id="skillSel">
+            <option value="0">Level 1</option>
+            <option value="1">Level 2</option>
+            <option value="2" selected>Level 3</option>
+          </select>
+        </div>
+        <div>
+          <label data-i18n="ai.movetime">AI Move Delay (ms)</label>
+          <input id="msInput" type="number" min="50" step="50" value="500" />
+        </div>
+      </div>
+    </div>
+
+    <div class="control">
+      <label data-i18n="clock.title">Timers</label>
+      <div class="clocks">
+        <div id="wClock" class="clock">05:00</div>
+        <div id="bClock" class="clock">05:00</div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button id="startBtn" class="btn" data-i18n="btn.start">Start</button>
+        <button id="pauseBtn" class="btn secondary" data-i18n="btn.pause">Pause</button>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button id="resetBtn" class="btn secondary" data-i18n="btn.reset">Reset</button>
+        <button id="swapBtn" class="btn secondary" data-i18n="btn.swap">Swap Sides</button>
+      </div>
+    </div>
+
+    <div class="control">
+      <label data-i18n="log.title">Move Log</label>
+      <div id="log" class="log" aria-live="polite"></div>
+    </div>
+
+    <div class="status" id="status"></div>
+  </aside>
+</div>
+
+<script src="./p.particle.js"></script>
+
+<script>
+(function(){
+  const I18N = {
+    current:'en',
+    dict:{
+      en:{},
+      th:{
+        "play.title":"กระดานหมากรุกอัจฉริยะ — จำลอง",
+        "play.subtitle":"นี่คือการจำลองของกระดานหมากรุกอัจฉริยะ แตะตัวหมากเพื่อดูช่องที่เดินได้",
+        "side.tools":"หน้าจอข้างกระดาน",
+        "side.mode":"โหมด",
+        "mode.hvh":"ผู้เล่น vs ผู้เล่น",
+        "mode.hvai":"ผู้เล่น vs ปัญญาประดิษฐ์",
+        "ai.difficulty":"ความแข็งแกร่งของ AI",
+        "ai.movetime":"เวลาเว้นก่อนเดิน (มิลลิวินาที)",
+        "clock.title":"นาฬิกา",
+        "btn.start":"เริ่ม",
+        "btn.pause":"หยุด",
+        "btn.reset":"รีเซ็ต",
+        "btn.swap":"สลับฝั่ง",
+        "log.title":"บันทึกการเดิน"
+      }
+    },
+    prepareAll(root){
+      root.querySelectorAll("[data-i18n]").forEach(el=>{ if(el.dataset.i18nEn==null) el.dataset.i18nEn = el.textContent; });
+      root.querySelectorAll("[data-i18n-html]").forEach(el=>{ if(el.dataset.i18nHtmlEn==null) el.dataset.i18nHtmlEn = el.innerHTML; });
+    },
+    apply(lang){
+      const d=this.dict[lang]||{};
+      document.querySelectorAll("[data-i18n]").forEach(el=>{
+        const k=el.getAttribute("data-i18n"); const base=el.dataset.i18nEn ?? el.textContent;
+        el.textContent = (lang==='en') ? base : (k in d ? d[k] : base);
+      });
+      document.querySelectorAll("[data-i18n-html]").forEach(el=>{
+        const k=el.getAttribute("data-i18n-html"); const base=el.dataset.i18nHtmlEn ?? el.innerHTML;
+        el.innerHTML = (lang==='en') ? base : (k in d ? d[k] : base);
+      });
+    },
+    wireSwitcher(){
+      const wrap = document.getElementById('lang-switcher');
+      if (!wrap) return;
+      const btnEN = wrap.querySelector('button[data-lang="en"]');
+      const btnTH = wrap.querySelector('button[data-lang="th"]');
+
+      const saved = localStorage.getItem('lang');
+      if (!saved) localStorage.setItem('lang', 'en');
+      this.current = (saved === 'en' || saved === 'th') ? saved : 'en';
+      document.documentElement.setAttribute('lang', this.current);
+
+      const setActive = (lang) => {
+        btnEN.classList.toggle('active', lang === 'en');
+        btnTH.classList.toggle('active', lang === 'th');
+        btnEN.setAttribute('aria-pressed', String(lang === 'en'));
+        btnTH.setAttribute('aria-pressed', String(lang === 'th'));
+      };
+      setActive(this.current);
+
+      wrap.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-lang]');
+        if (!btn) return;
+        const lang = btn.dataset.lang;
+        if (lang !== 'en' && lang !== 'th') return;
+        this.current = lang;
+        localStorage.setItem('lang', lang);
+        document.documentElement.setAttribute('lang', lang);
+        setActive(lang);
+        this.apply(lang);
+      });
+    },
+    init(){ this.prepareAll(document); this.apply(this.current); this.wireSwitcher(); }
+  };
+  document.addEventListener("DOMContentLoaded", ()=>I18N.init());
+})();
+</script>
+
+<script>
+(function(){
+  const boardEl = document.getElementById('board');
+  const logEl   = document.getElementById('log');
+  const statusEl= document.getElementById('status');
+  const modeSel = document.getElementById('modeSel');
+  const skillSel= document.getElementById('skillSel');
+  const msInput = document.getElementById('msInput');
+  const startBtn= document.getElementById('startBtn');
+  const pauseBtn= document.getElementById('pauseBtn');
+  const resetBtn= document.getElementById('resetBtn');
+  const swapBtn = document.getElementById('swapBtn');
+  const wClockEl= document.getElementById('wClock');
+  const bClockEl= document.getElementById('bClock');
+
+  const game = new Chess();
+  let running = false;
+  let lastTick = null, rafId = null;
+  let whiteMs = 5*60*1000, blackMs = 5*60*1000;
+
+  let orientation = 'white';
+  const board = Chessboard('board', {
+    draggable: true,
+    position: 'start',
+    orientation: orientation,
+    pieceTheme: 'https://cdn.jsdelivr.net/npm/@chrisoakman/chessboardjs@1.0.0/img/chesspieces/wikipedia/{piece}.png',
+    onDragStart: (source, piece) => {
+      if (game.isGameOver()) return false;
+      const turn = game.turn() === 'w' ? 'white' : 'black';
+      if (modeSel.value === 'hvai') {
+        if (piece[0] === 'b') return false;
+      } else {
+        if ((turn === 'white' && piece[0] !== 'w') || (turn === 'black' && piece[0] !== 'b')) return false;
+      }
+      return true;
+    },
+    onDrop: (source, target) => {
+      const move = game.move({ from: source, to: target, promotion: 'q' });
+      if (!move) return 'snapback'; 
+      updateAfterMove(move);
+      if (modeSel.value === 'hvai' && game.turn() === 'b' && !game.isGameOver()) {
+        const delay = Math.max(50, +msInput.value || 500);
+        setTimeout(aiMove, delay);
+      }
+    },
+    onSnapEnd: () => board.position(game.fen())
+  });
+
+  function flipBoard(){
+    orientation = (orientation === 'white') ? 'black' : 'white';
+    board.orientation(orientation);
+  }
+
+  function fmt(ms){ ms = Math.max(0, ms|0); const m=Math.floor(ms/60000), s=Math.floor((ms%60000)/1000); return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); }
+  function renderClocks(){ wClockEl.textContent = fmt(whiteMs); bClockEl.textContent = fmt(blackMs); }
+  function tick(now){
+    if (!running){ lastTick = null; return; }
+    if (lastTick != null){
+      const dt = now - lastTick;
+      if (game.turn() === 'w') whiteMs -= dt; else blackMs -= dt;
+      renderClocks();
+      if (whiteMs<=0 || blackMs<=0){ running=false; statusEl.textContent='Time over'; }
+    }
+    lastTick = now; rafId = requestAnimationFrame(tick);
+  }
+  function startTimers(){ if (running) return; running = true; rafId = requestAnimationFrame(tick); }
+  function pauseTimers(){ running = false; if (rafId) cancelAnimationFrame(rafId); rafId = null; lastTick = null; }
+  function resetTimers(){ pauseTimers(); whiteMs=5*60*1000; blackMs=5*60*1000; renderClocks(); }
+
+  function pushLog(moveObj){
+    const hist = game.history({verbose:true});
+    const ply = hist.length; const san = moveObj.san; const moveNum = Math.ceil(ply/2);
+    const isWhite = (ply % 2) === 1;
+    if (isWhite){
+      const div = document.createElement('div'); div.innerHTML = `<code>${moveNum}. ${san}</code>`; logEl.appendChild(div);
+    } else {
+      const last = logEl.lastElementChild; if (last) last.innerHTML += ` <code>${san}</code>`;
+      else { const div = document.createElement('div'); div.innerHTML = `<code>${moveNum}. ... ${san}</code>`; logEl.appendChild(div); }
+    }
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+  function updateStatus(){
+    if (game.isGameOver()){
+      const msg = game.isCheckmate() ? (game.turn()==='w' ? 'Black wins by checkmate' : 'White wins by checkmate')
+                : game.isDraw() ? 'Draw' : 'Game over';
+      statusEl.textContent = msg;
+    } else {
+      statusEl.textContent = (game.turn()==='w' ? 'White' : 'Black') + ' to move';
+    }
+  }
+  function updateAfterMove(move){
+    board.position(game.fen());
+    pushLog(move);
+    updateStatus();
+  }
+
+  function aiMove(){
+    const moves = game.moves({verbose:true});
+    if (!moves.length) return;
+    const skill = +skillSel.value || 0;
+    let pick;
+    if (skill >= 2){
+      const caps = moves.filter(m=>m.flags.includes('c'));
+      const checks = moves.filter(m=>m.san.includes('+'));
+      const pref = caps.length ? caps : (checks.length ? checks : moves);
+      pick = pref[Math.floor(Math.random()*pref.length)];
+    } else if (skill >= 1){
+      pick = moves[Math.floor(Math.random()*moves.length)];
+    } else {
+      pick = moves[Math.floor(Math.random()*moves.length)];
+    }
+    const mv = game.move({from: pick.from, to: pick.to, promotion:'q'});
+    if (mv) updateAfterMove(mv);
+  }
+
+  modeSel.addEventListener('change', ()=>{ newGame(); });
+  startBtn.addEventListener('click', startTimers);
+  pauseBtn.addEventListener('click', pauseTimers);
+  resetBtn.addEventListener('click', newGame);
+  swapBtn.addEventListener('click', ()=>{ flipBoard(); });
+
+  function newGame(){
+    game.reset();
+    board.start();
+    logEl.innerHTML = '';
+    resetTimers();
+    updateStatus();
+  }
+
+  renderClocks();
+  newGame();
+})();
+</script>
+</body>
+</html>
