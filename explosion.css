@@ -1,0 +1,30 @@
+/* Container for explosion */
+.explosion {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Glow circle */
+.explosion-glow {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.7);
+  opacity: 1;
+  transform: scale(0);
+  animation: glow-expand-fade 0.6s forwards ease-out;
+}
+
+@keyframes glow-expand-fade {
+  to {
+    opacity: 0;
+    transform: scale(4);
+  }
+}

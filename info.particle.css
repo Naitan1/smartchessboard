@@ -1,0 +1,32 @@
+/* Particle container covers the screen */
+#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0; /* Behind main content */
+}
+
+/* Individual glowing particles */
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background-color: white;
+    opacity: 0.5;
+    box-shadow: 0 0 6px 3px rgba(255, 255, 255, 0.3); /* glow effect */
+    animation: float linear infinite;
+    will-change: transform;
+}
+
+/* Float animation */
+@keyframes float {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(var(--x), var(--y));
+    }
+}
