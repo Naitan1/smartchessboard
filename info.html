@@ -2,17 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Smart Chessboard | Information</title>
+  <title>Smart Chessboard — Information</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-  <link rel="icon" href="./api.IMG_5982.webp" type="image/x-icon" />
-  <link rel="stylesheet" href="./info.css" />
-  <link rel="stylesheet" href="./info.particle.css" />
-  <link rel="stylesheet" href="./ext.explosion.css" />
+  <link rel="icon" href="./IMG_5982.webp" type="image/x-icon" />
+  <link rel="stylesheet" href="./main.css" />
+  <link rel="stylesheet" href="./particle.css" />
+  <link rel="stylesheet" href="./explosion.css" />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
 
   <style>
-    :root { --maxw: 1200px; --measure: 85ch; }
+    :root {
+      --maxw: 1200px;
+      --measure: 85ch;
+    }
 
     body {
       margin: 0;
@@ -26,13 +29,13 @@
     .page {
       position: relative;
       z-index: 1;
-      padding: clamp(8px, 2vw, 16px) clamp(12px, 3vw, 24px);
+      padding: clamp(12px, 3vw, 32px);
       display: grid;
       justify-items: center;
-      gap: clamp(10px, 2vw, 20px);
+      gap: clamp(14px, 3vw, 28px);
     }
 
-    /* Back button (retro) */
+    /* Back button (keep retro font to match menu) */
     .back-button {
       position: fixed;
       top: max(12px, env(safe-area-inset-top));
@@ -50,7 +53,7 @@
     .back-button:hover { background-color: #eee; }
     .back-button:active { transform: scale(0.98); }
 
-    /* === iOS-style language switch (no dot) === */
+    /* Language switch — SAME style as menu page */
     .lang-switch {
       position: fixed;
       top: max(10px, env(safe-area-inset-top));
@@ -58,62 +61,75 @@
       transform: translateX(-50%);
       z-index: 9999;
       display: inline-flex;
+      gap: 8px;
       align-items: center;
-      gap: 10px;
       padding: 6px 10px;
       border-radius: 999px;
-      background: rgba(20,20,20,0.6);
+      background: rgba(255,255,255,0.85);
       backdrop-filter: blur(6px);
-      box-shadow: 0 0 6px rgba(255,255,255,0.15);
-    }
-    .lang-switch .lang-label {
-      font-family: "Press Start 2P", cursive;
-      font-size: 10px;
-      color: #fff;
-      opacity: 0.85;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      color: #111;
+      font-size: 14px;
       user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: "Press Start 2P", cursive;
     }
-    #langToggle { position: absolute; opacity: 0; width: 0; height: 0; }
+    .lang-switch button {
+      border: 0; padding: 6px 10px; border-radius: 999px;
+      background: transparent; cursor: pointer; font-weight: 600;
+      font-family: inherit;
+    }
+    .lang-switch button.active { background: #111; color: #fff; }
 
-    .toggle {
-      position: relative;
-      width: 56px; height: 32px;
-      border-radius: 999px;
+    /* Title retro font */
+    .title {
+      font-family: "Press Start 2P", cursive;
+      text-align: center;
+      line-height: 1.2;
+      font-size: clamp(20px, 6.4vw, 48px);
+      letter-spacing: .5px;
+      margin-top: clamp(24px, 8vw, 60px);
+    }
+
+    .info-wrap {
+      width: min(100%, var(--maxw));
+      padding-inline: clamp(12px, 3vw, 24px);
+    }
+
+    /* Info text uses classic serif font */
+    .info-kicker-wrap {
+      width: 100%;
+      display: grid;
+      place-items: center;
+      margin: 8px 0 16px;
+    }
+    .info-kicker,
+    .info-text {
+      font-family: "Times New Roman", Georgia, serif;
+    }
+    .info-kicker {
+      font-size: clamp(12px, 3.2vw, 18px);
+      opacity: .95;
+      text-align: center;
       display: inline-block;
-      background: #bbb; /* OFF = EN */
-      border: 1px solid rgba(255,255,255,0.35);
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.35),
-                  0 0 6px rgba(255,255,255,0.25);
-      cursor: pointer;
-      transition: background 180ms ease, box-shadow 180ms ease;
+      max-width: var(--measure);
     }
-    .toggle .knob {
-      position: absolute;
-      top: 3px; left: 3px; /* OFF position */
-      width: 26px; height: 26px; border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-      transition: left 180ms ease;
-    }
-    #langToggle:checked + .toggle {
-      background: #34c759; /* ON (Thai) */
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.35),
-                  0 0 8px rgba(255,255,255,0.35);
-    }
-    #langToggle:checked + .toggle .knob { left: 27px; }
-    #langToggle:focus + .toggle { outline: 2px solid #9cf; outline-offset: 2px; }
-
-    @media (max-width: 400px) {
-      .toggle { width: 50px; height: 28px; }
-      .toggle .knob { width: 22px; height: 22px; top: 3px; left: 3px; }
-      #langToggle:checked + .toggle .knob { left: 25px; }
+    .info-text {
+      font-size: clamp(14px, 3.2vw, 18px);
+      line-height: 1.65;
+      margin: 0 auto 16px;
+      max-inline-size: var(--measure);
     }
 
-    /* Info content: classic font only here */
-    .title { font-family: "Press Start 2P", cursive; text-align: center; }
-    .info-wrap { width: min(100%, var(--maxw)); }
-    .info-kicker, .info-text { font-family: "Times New Roman", Georgia, serif; }
-    .info-columns .info-text { break-inside: avoid; max-inline-size: none; }
+    @media (min-width: 1200px) {
+      .info-columns {
+        columns: 2;
+        column-gap: clamp(24px, 4vw, 48px);
+        max-width: var(--maxw);
+        margin-inline: auto;
+      }
+      .info-columns .info-text { break-inside: avoid; max-inline-size: none; }
+    }
 
     .safe-bottom { height: env(safe-area-inset-bottom, 0); width: 100%; }
   </style>
@@ -123,31 +139,32 @@
 
   <a href="../main.html" class="back-button" data-i18n="back.label" data-i18n-title="back.label" title="Back">&#8592; Back</a>
 
-  <!-- Language switch (iOS-style) -->
+  <!-- Language switch -->
   <div id="lang-switcher" class="lang-switch" aria-label="Language switch">
-    <span class="lang-label left">EN</span>
-    <input id="langToggle" type="checkbox" aria-label="Toggle Thai language" />
-    <label for="langToggle" class="toggle"><span class="knob"></span></label>
-    <span class="lang-label right">ไทย</span>
+    <button type="button" data-lang="en" aria-pressed="true">English</button>
+    <span>•</span>
+    <button type="button" data-lang="th" aria-pressed="false">ไทย</button>
   </div>
 
   <main class="page">
     <h1 class="title" data-i18n="info.title">Information</h1>
 
     <section class="info-wrap">
-      <div class="info-kicker-wrap" style="display:grid;place-items:center;margin:8px 0 16px;">
+      <div class="info-kicker-wrap">
         <p class="info-kicker" data-i18n-html="info.kicker">
           <em>*This is a simulation of a real Smart Chessboard*</em>
         </p>
       </div>
 
-      <div class="info-columns" style="max-width:var(--maxw);margin-inline:auto;">
+      <div class="info-columns">
         <p class="info-text" data-i18n="info.p1">
           The Smart Chessboard is a project designed to both teach new players and provide a unique and enjoyable experience for chess enthusiasts. It incorporates several innovative features.
         </p>
+
         <p class="info-text" data-i18n="info.p2">
           The first is the pattern system: each tile on the 8x8 board is equipped with a sensor and an LED. Every chess piece is fitted with a QR code at its base. When a piece is lifted, the sensor detects its absence and the LEDs will display the movement patterns available to that piece—whether it can move, capture, or put the opponent in check.
         </p>
+
         <p class="info-text" data-i18n="info.p3">
           Additionally, the Smart Chessboard is accompanied by a side screen containing a variety of tools. These include a timer, buttons to start and reset the game clock, and mode selection options: Human vs Human or AI vs Human. When choosing to play against the AI, players can select the opponent’s Elo rating or difficulty level, powered by the Stockfish API. The screen also displays both the player’s moves and the AI’s responses in real time.
         </p>
@@ -157,10 +174,10 @@
 
   <div class="safe-bottom" aria-hidden="true"></div>
 
-  <script src="./info.particle.js"></script>
-  <script src="./ext.explosion.js"></script>
+  <script src="./particle.js"></script>
+  <script src="./explosion.js"></script>
 
-  <!-- i18n script -->
+  <!-- i18n script (English default, Thai available) -->
   <script>
   (function () {
     const I18N = {
@@ -168,7 +185,7 @@
       dict: {
         en: {},
         th: {
-          "back.label": "← ย้อนกลับ",
+          "back.label": "ย้อนกลับ",
           "info.title": "ข้อมูล",
           "info.kicker": "<em>*นี่เป็นเพียงการจำลองของกระดานหมากรุกอัจฉริยะ (Smart Chessboard) จริง*</em>",
           "info.p1": "Smart Chessboard เป็นโครงการที่ถูกพัฒนาขึ้นเพื่อใช้ในการสอนผู้เล่นใหม่ และเพื่อมอบประสบการณ์ที่แปลกใหม่และสนุกสนานให้กับผู้ที่ชื่นชอบหมากรุก โดยได้มีการผสานฟังก์ชันที่โดดเด่นหลายประการเข้าไว้ด้วยกัน",
@@ -178,12 +195,14 @@
       },
 
       init() {
-        // First load: force EN
         const saved = localStorage.getItem('lang');
-        if (!saved) localStorage.setItem('lang', 'en');
-        this.current = (saved === 'th') ? 'th' : 'en';
+        if (!saved) {
+          localStorage.setItem('lang', 'en');
+          this.current = 'en';
+        } else {
+          this.current = (saved === 'en' || saved === 'th') ? saved : 'en';
+        }
         document.documentElement.setAttribute('lang', this.current);
-
         this.prepareAll(document);
         this.apply(this.current);
         this.wireSwitcher();
@@ -191,27 +210,28 @@
 
       wireSwitcher() {
         const wrap = document.getElementById('lang-switcher');
-        const toggle = document.getElementById('langToggle');
-        if (!wrap || !toggle) return;
+        if (!wrap) return;
+        const btnEN = wrap.querySelector('button[data-lang="en"]');
+        const btnTH = wrap.querySelector('button[data-lang="th"]');
 
-        // ON (checked) = TH, OFF = EN
-        toggle.checked = (this.current === 'th');
-
-        const left = wrap.querySelector('.lang-label.left');
-        const right = wrap.querySelector('.lang-label.right');
-        const updateLabels = () => {
-          if (left) left.style.opacity = toggle.checked ? '0.6' : '1';
-          if (right) right.style.opacity = toggle.checked ? '1' : '0.6';
+        const setActive = (lang) => {
+          btnEN.classList.toggle('active', lang === 'en');
+          btnTH.classList.toggle('active', lang === 'th');
+          btnEN.setAttribute('aria-pressed', String(lang === 'en'));
+          btnTH.setAttribute('aria-pressed', String(lang === 'th'));
         };
-        updateLabels();
+        setActive(this.current);
 
-        toggle.addEventListener('change', () => {
-          const lang = toggle.checked ? 'th' : 'en';
+        wrap.addEventListener('click', (e) => {
+          const btn = e.target.closest('button[data-lang]');
+          if (!btn) return;
+          const lang = btn.dataset.lang;
+          if (!this.dict[lang]) return;
           this.current = lang;
           localStorage.setItem('lang', lang);
           document.documentElement.setAttribute('lang', lang);
           this.apply(lang);
-          updateLabels();
+          setActive(lang);
         });
       },
 
